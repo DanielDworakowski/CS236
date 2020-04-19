@@ -13,6 +13,8 @@ data/
 build/
 develop-eggs/
 dist/
+out_nonsaturating/
+.vscode/
 downloads/
 eggs/
 .eggs/
