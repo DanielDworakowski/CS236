@@ -76,7 +76,17 @@ def loss_wasserstein_gp(g, d, x_real, *, device):
     # You may find some or all of the below useful:
     #   - torch.rand
     #   - torch.autograd.grad(..., create_graph=True)
-    raise NotImplementedError
+    lambda_ = 10
+    x_fake = g(z)
+    d_pred = d(x_fake)
+    d_loss = d_pred.mean() - d(x_real).mean()
+    alpha = torch.rand(batch_size, device=device).view(-1, 1, 1, 1)
+    alphap = 1 - alpha
+    cvx_x = alpha * x_fake + alphap * x_real
+    d_cvxx = d(cvx_x)
+    d_loss += lambda_ * (torch.autograd.grad(d_cvxx, cvx_x, torch.ones_like(d_cvxx), create_graph=True)[0].view(batch_size, -1).norm(dim=1) - 1).pow_(2).mean()
+    # d_loss += lambda_ * (torch.autograd.grad(d_cvxx.sum(), cvx_x, create_graph=True)[0].norm(dim=1) - 1).pow_(2).mean()
+    g_loss = -d_pred.mean()
     # YOUR CODE ENDS HERE
 
     return d_loss, g_loss

@@ -15,6 +15,7 @@ develop-eggs/
 dist/
 out_nonsaturating/
 out_nonsaturating_conditional/
+out_wasserstein_gp/
 .vscode/
 downloads/
 eggs/
